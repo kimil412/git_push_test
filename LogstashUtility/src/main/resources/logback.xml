@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>junit.log</file>
+		<append>false</append>
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%-4r %-5level %logger{35}: %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
+		<RemoteHost>localhost</RemoteHost>
+		<Port>2324</Port>
+		<reconnectionDelay>10000</reconnectionDelay>
+		<includeCallerData>false</includeCallerData>
+	</appender>
+	<appender name="stash" class="net.logstash.logback.appender.LogstashAccessTcpSocketAppender">
+      <destination>localhost:4560</destination>
+
+      <!-- encoder is required -->
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+  	</appender>
+	<logger name="MLS_LOGGER" level="INFO">
+		<appender-ref ref="SOCKET" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="SOCKET" /> -->
+		<appender-ref ref="stash" />
+	</root>
+	<!-- We want error logging from this logger to go to an extra appender It 
+		still inherits CONSOLE STDOUT from the root logger -->
+	<logger name="junit" level="INFO">
+		<appender-ref ref="STDOUT" />
+	</logger>
+</configuration>
